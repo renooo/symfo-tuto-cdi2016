@@ -1,0 +1,6 @@
+<h1>{{ album.title }}</h1>
+<ul>
+{% for track in album.tracks %}
+    <li>{{ track.title }} - par {{ track.album.artist.name }}</li>
+{% endfor %}
+</ul>

@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ artist.name | title }} - {{ parent() }}{% endblock %}
+
+{% block body %}
+    <h1>Fiche artiste : {{ artist.name | title }}</h1>
+
+    <h4>Genres musicaux :</h4>
+    <ul>
+    {% for genre in artist.genres %}
+        <li>{{ genre.name }}</li>
+    {% endfor %}
+    </ul>
+
+    <h2>Albums :</h2>
+
+    {% for album in artist.albums %}
+    <div class="row">
+        <div class="col-md-3">
+            <img src="http://placehold.it/100x100/{{ loop.index }}">
+        </div>
+        <div class="col-md-8">
+            <h3>{{ album.title }}</h3>
+            <small>Sorti le : <strong>{{ album.releaseDate | date('d/m/Y') }}</strong></small>
+        </div>
+        <div class="col-md-1">
+            <a class="btn btn-primary" href="{{ path('app_album_show', {'id': album.id}) }}">Voir</a>
+        </div>
+    </div>
+    {% endfor %}
+
+    <hr>
+
+    <h2>Date(s) de tournée :</h2>
+
+    {% for tourDate in tourDates %}
+    <div class="row">
+        <div class="col-md-2">
+            <strong>{{ tourDate.datetime | date('d/m/Y') }}</strong>
+        </div>
+        <div class="col-md-10">
+            {{ tourDate.title }}
+        </div>
+    </div>
+    {% endfor %}
+{% endblock %}

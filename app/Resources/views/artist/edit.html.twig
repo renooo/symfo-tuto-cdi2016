@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% form_theme artistForm 'bootstrap_3_horizontal_layout.html.twig' %}
+
+{% block body %}
+    <h1>Modification de l'artiste :
+        {{ artist.name }}
+    </h1>
+
+    {% if tourDates is not empty %}
+    <small><strong>Actuellement en tournée !</strong></small>
+    {% endif %}
+
+    {{ form_start(artistForm) }}
+    {{ form_widget(artistForm) }}
+    {{ form_end(artistForm) }}
+
+{% endblock %}

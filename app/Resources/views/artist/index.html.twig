@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des artistes - {{ parent() }}{% endblock %}
+
+{% block body %}
+<h5>{{ 'app.welcome_message' | trans }}</h5>
+
+<h1>Liste des artistes</h1>
+<small>Pages artistes vues : <strong>{{ artistViewCount }}</strong></small>
+
+{% for artist in artists %}
+<div class="row">
+    <div class="col-md-3">
+        <img src="http://placehold.it/100x100/{{ loop.index }}">
+    </div>
+    <div class="col-md-7">
+        <h2>{{ artist.name }}</h2>
+        <small>Nombre d'albums en base : <strong>{{ artist.albums | length }}</strong></small>
+    </div>
+    <div class="col-md-2">
+        <a class="btn btn-primary" href="{{ path('app_artist_show', {'id': artist.id}) }}">Voir</a>
+        <a class="btn btn-info" href="{{ path('app_artist_edit', {'id': artist.id}) }}">Modifier</a>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}
