@@ -57,6 +57,14 @@ class Artist
      */
     private $genres;
 
+    /**
+     * @var User
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="submittedArtists")
+     */
+    private $submittedBy;
+
+
     function __construct()
     {
         $this->albums = new ArrayCollection();
@@ -175,5 +183,24 @@ class Artist
      */
     public function updateName()
     {
+    }
+
+    /**
+     * @return User
+     */
+    public function getSubmittedBy()
+    {
+        return $this->submittedBy;
+    }
+
+    /**
+     * @param User $submittedBy
+     * @return Artist
+     */
+    public function setSubmittedBy($submittedBy)
+    {
+        $this->submittedBy = $submittedBy;
+
+        return $this;
     }
 }

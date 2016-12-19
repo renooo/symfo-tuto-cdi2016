@@ -35,6 +35,7 @@ framework:
     assets: ~
     php_errors:
         log: true
+    ide: 'phpstorm://open?file=%%f&line=%%l'
 
 
 # Twig Configuration

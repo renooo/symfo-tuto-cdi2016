@@ -25,3 +25,9 @@ services:
         arguments: ['@mailer', '@security.token_storage']
         tags:
             - {name: kernel.event_subscriber}
+
+    app.artist_voter:
+        class: AppBundle\Security\ArtistVoter
+        tags:
+            - { name: security.voter }
+        public: false

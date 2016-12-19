@@ -18,7 +18,7 @@ class LoadGenreData extends AbstractFixture implements FixtureInterface, Ordered
 {
     public function getOrder()
     {
-        return 1;
+        return 2;
     }
 
     public function load(ObjectManager $manager)

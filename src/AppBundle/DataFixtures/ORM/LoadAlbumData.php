@@ -18,7 +18,7 @@ class LoadAlbumData extends AbstractFixture implements FixtureInterface, Ordered
 {
     public function getOrder()
     {
-        return 3;
+        return 4;
     }
 
     public function load(ObjectManager $manager)
@@ -61,7 +61,6 @@ class LoadAlbumData extends AbstractFixture implements FixtureInterface, Ordered
             }
 
             $artist = $this->getReference('artist_'.$albumData['artist']);
-
             $album->setArtist($artist);
 
             $manager->persist($album);

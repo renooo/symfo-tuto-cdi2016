@@ -26,6 +26,11 @@ class User extends BaseUser
     protected $id;
 
     /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Artist", mappedBy="s")
+     */
+    private $submittedArtists;
+
+    /**
      * @return int
      */
     public function getId()

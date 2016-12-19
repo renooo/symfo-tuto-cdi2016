@@ -7,6 +7,7 @@ use AppBundle\Event\ArtistEvent;
 use AppBundle\Events\ArtistEvents;
 use AppBundle\Form\ArtistFormType;
 use AppBundle\Repository\ArtistRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -77,6 +78,10 @@ class ArtistController extends Controller
      *     path="/artist/{id}",
      *     requirements={"id": "[0-9]+"}
      * )
+     * @Route(
+     *     path="/artist/{name}",
+     *     options={"utf8": false}
+     * )
      */
     public function showAction(Artist $artist)
     {
@@ -111,6 +116,8 @@ class ArtistController extends Controller
      */
     public function editAction(Artist $artist, Request $request)
     {
+        $this->denyAccessUnlessGranted('edit', $artist, "Vous ne pouvez pas éditer un artiste que vous n'avez pas créé !");
+
         $bandsInTownClient = $this->get('app.bandsintown.client');
         $tourDates = $bandsInTownClient->getTourDates($artist);
 
@@ -127,10 +134,8 @@ class ArtistController extends Controller
             $em->flush();
 
             $this->get('event_dispatcher')->dispatch(ArtistEvents::EDIT, new ArtistEvent($artist));
-            $this->get('mailer');
 
-            //La redirection est commentée pour qu'on puisse voir l'email dans la Debug Toolbar
-            //return $this->redirectToRoute('app_artist_show', ['id' => $artist->getId()]);
+            return $this->redirectToRoute('app_artist_show', ['id' => $artist->getId()]);
         }
 
         return $this->render('artist/edit.html.twig', [
