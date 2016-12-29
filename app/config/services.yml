@@ -31,3 +31,8 @@ services:
         tags:
             - { name: security.voter }
         public: false
+
+    artist.order_filter:
+        parent:    'api_platform.doctrine.orm.order_filter'
+        arguments: [ { name: 'ASC' } ]
+        tags:      [ { name: 'api_platform.filter', id: 'artist.order' } ]

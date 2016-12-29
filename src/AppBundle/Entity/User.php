@@ -8,10 +8,12 @@
 
 namespace AppBundle\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 use FOS\UserBundle\Model\User as BaseUser;
 
 /**
+ * @ApiResource()
  * @ORM\Entity()
  */
 class User extends BaseUser
@@ -26,7 +28,7 @@ class User extends BaseUser
     protected $id;
 
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Artist", mappedBy="s")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Artist", mappedBy="submittedBy")
      */
     private $submittedArtists;
 
@@ -36,5 +38,24 @@ class User extends BaseUser
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSubmittedArtists()
+    {
+        return $this->submittedArtists;
+    }
+
+    /**
+     * @param mixed $submittedArtists
+     * @return User
+     */
+    public function setSubmittedArtists($submittedArtists)
+    {
+        $this->submittedArtists = $submittedArtists;
+
+        return $this;
     }
 }
