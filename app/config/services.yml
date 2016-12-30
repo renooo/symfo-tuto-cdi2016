@@ -32,7 +32,28 @@ services:
             - { name: security.voter }
         public: false
 
-    artist.order_filter:
+    any.name_order_filter:
         parent:    'api_platform.doctrine.orm.order_filter'
         arguments: [ { name: 'ASC' } ]
-        tags:      [ { name: 'api_platform.filter', id: 'artist.order' } ]
+        tags:      [ { name: 'api_platform.filter', id: 'name.order' } ]
+
+    album.artist_filter:
+        parent:    'api_platform.doctrine.orm.search_filter'
+        arguments: [ { artist.id: 'exact' } ]
+        tags:      [ { name: 'api_platform.filter', id: 'album.artist' } ]
+
+    album.order_filter:
+        parent:    'api_platform.doctrine.orm.order_filter'
+        arguments: [ { releaseDate: 'ASC' } ]
+        tags:      [ { name: 'api_platform.filter', id: 'album.order' } ]
+
+    artist.genre_filter:
+        parent:    'api_platform.doctrine.orm.search_filter'
+        arguments: [ { genres.id: 'exact' } ]
+        tags:      [ { name: 'api_platform.filter', id: 'artist.genre' } ]
+
+    any.name_filter:
+        parent:    'api_platform.doctrine.orm.search_filter'
+        arguments: [ { name: 'partial' } ]
+        tags:      [ { name: 'api_platform.filter', id: 'name.filter' } ]
+

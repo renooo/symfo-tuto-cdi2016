@@ -12,7 +12,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource()
+ * @ApiResource(attributes={"filters"={"album.artist", "album.order"}})
  * @ORM\Entity()
  */
 class Album

@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ApiResource(attributes={"filters"={"artist.order"}})
+ * @ApiResource(attributes={"filters"={"name.order", "artist.genre", "name.filter"}})
  * @ORM\Entity(repositoryClass="AppBundle\Repository\ArtistRepository")
  * @ORM\HasLifecycleCallbacks()
  */
@@ -55,16 +55,22 @@ class Artist
     /**
      * @var ArrayCollection
      *
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Genre", inversedBy="artists")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Genre", inversedBy="artists", fetch="EAGER")
      */
     private $genres;
 
     /**
      * @var User
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="submittedArtists")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="submittedArtists", fetch="EAGER")
      */
     private $submittedBy;
+
+    /**
+     * @var string
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $biography;
 
 
     function __construct()
@@ -202,6 +208,25 @@ class Artist
     public function setSubmittedBy($submittedBy)
     {
         $this->submittedBy = $submittedBy;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBiography()
+    {
+        return $this->biography;
+    }
+
+    /**
+     * @param string $biography
+     * @return Artist
+     */
+    public function setBiography($biography)
+    {
+        $this->biography = $biography;
 
         return $this;
     }

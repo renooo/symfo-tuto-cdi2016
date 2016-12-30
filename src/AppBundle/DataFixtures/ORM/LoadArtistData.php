@@ -13,6 +13,7 @@ use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
+use Faker;
 
 class LoadArtistData extends AbstractFixture implements FixtureInterface, OrderedFixtureInterface
 {
@@ -412,14 +413,19 @@ class LoadArtistData extends AbstractFixture implements FixtureInterface, Ordere
         //$('table tr td:first-child() > a').map(function(){ return {creationYear: parseInt($($(this.parentNode.parentNode.parentNode.parentNode).prevAll('h3')[0]).prop('innerText').substr(0, 4)), name: $(this).prop('innerText')}; }).toArray();
 
         $userNames = ['toto', 'titi'];
+        $faker = Faker\Factory::create();
 
         foreach ($artists as $artistData) {
             $artist = new Artist();
             $artist->setName($artistData['name'])
-                   ->setCreationYear($artistData['creationYear']);
+                   ->setCreationYear($artistData['creationYear'])
+                   ->setBiography(implode("\n\n", $faker->paragraphs));
 
             $user = $this->getReference(sprintf('user_%s', $userNames[array_rand($userNames)]));
             $artist->setSubmittedBy($user);
+
+            $genre = $this->getReference(sprintf('genre_%s', rand(1, 148)));
+            $artist->addGenre($genre);
 
             if ($this->hasReference('artist_'.$artist->getName())) {
                 continue;

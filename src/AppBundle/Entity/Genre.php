@@ -11,9 +11,21 @@ namespace AppBundle\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *     attributes={
+ *          "filters"={"name.order"},
+ *          "pagination_enabled"=false,
+ *          "normalization_context"={"groups"={"get"}}},
+ *          itemOperations={
+ *              "get"={"method"="GET", "normalization_context"={"groups"={"get"}}}
+ *          },
+ *          collectionOperations={
+ *              "get"={"method"="GET", "normalization_context"={"groups"={"get"}}}
+ *          }
+*       )
  * @ORM\Entity()
  */
 class Genre
@@ -24,6 +36,7 @@ class Genre
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Groups({"get"})
      */
     private $id;
 
@@ -31,6 +44,7 @@ class Genre
      * @var string
      *
      * @ORM\Column(type="string")
+     * @Groups({"get"})
      */
     private $name;
 

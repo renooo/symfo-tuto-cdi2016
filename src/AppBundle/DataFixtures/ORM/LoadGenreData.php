@@ -174,12 +174,12 @@ class LoadGenreData extends AbstractFixture implements FixtureInterface, Ordered
             'SynthPop',
         ];
 
-        foreach ($id3Tags as $id3Tag) {
+        foreach ($id3Tags as $g => $id3Tag) {
             $genre = new Genre();
             $genre->setName($id3Tag);
 
             $manager->persist($genre);
-            $this->addReference('genre_'.$genre->getName(), $genre);
+            $this->addReference('genre_'.($g+1), $genre);
         }
 
         $manager->flush();
