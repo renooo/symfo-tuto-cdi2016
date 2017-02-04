@@ -16,16 +16,17 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ApiResource(
  *     attributes={
- *          "filters"={"name.order"},
+ *          "filters"={"label.order", "label.filter"},
  *          "pagination_enabled"=false,
- *          "normalization_context"={"groups"={"get"}}},
- *          itemOperations={
+ *          "normalization_context"={"groups"={"get"}},
+ *          "itemOperations"={
  *              "get"={"method"="GET", "normalization_context"={"groups"={"get"}}}
  *          },
- *          collectionOperations={
+ *          "collectionOperations"={
  *              "get"={"method"="GET", "normalization_context"={"groups"={"get"}}}
  *          }
-*       )
+ *      }
+ * )
  * @ORM\Entity()
  */
 class Genre
@@ -46,7 +47,7 @@ class Genre
      * @ORM\Column(type="string")
      * @Groups({"get"})
      */
-    private $name;
+    private $label;
 
     /**
      * @var ArrayCollection
@@ -66,18 +67,18 @@ class Genre
     /**
      * @return string
      */
-    public function getName()
+    public function getLabel()
     {
-        return $this->name;
+        return $this->label;
     }
 
     /**
-     * @param string $name
+     * @param string $label
      * @return Genre
      */
-    public function setName($name)
+    public function setLabel($label)
     {
-        $this->name = $name;
+        $this->label = $label;
 
         return $this;
     }

@@ -23,33 +23,7 @@ class LoadAlbumData extends AbstractFixture implements FixtureInterface, Ordered
 
     public function load(ObjectManager $manager)
     {
-        $albums = [
-            [
-                'title' => 'Closer',
-                'releaseDate' => '1980-07-18',
-                'artist' => 'Joy Division',
-            ],
-            [
-                'title' => 'Inconnu',
-                'releaseDate' => '2001-02-03',
-                'artist' => 'PasDuTout',
-            ],
-            [
-                'title' => 'Meddle',
-                'releaseDate' => '1971-10-31',
-                'artist' => 'Pink Floyd',
-            ],
-            [
-                'title' => 'Dark Side Of The Moon',
-                'releaseDate' => '1973-03-01',
-                'artist' => 'Pink Floyd',
-            ],
-            [
-                'title' => 'The Piper at the Gates of Dawn',
-                'releaseDate' => '1967-08-05',
-                'artist' => 'Pink Floyd',
-            ],
-        ];
+        $albums = include 'data/albums.php';
 
         foreach ($albums as $albumData) {
             $album = new Album();
@@ -64,6 +38,8 @@ class LoadAlbumData extends AbstractFixture implements FixtureInterface, Ordered
             $album->setArtist($artist);
 
             $manager->persist($album);
+
+            $this->addReference($albumData['title'], $album);
         }
 
         $manager->flush();

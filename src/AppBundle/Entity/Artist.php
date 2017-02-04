@@ -11,10 +11,22 @@ namespace AppBundle\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ApiResource(attributes={"filters"={"name.order", "artist.genre", "name.filter"}})
+ * @ApiResource(
+ *     attributes={
+ *          "filters"={"name.order", "artist.genre", "name.filter"},
+ *          "normalization_context"={"groups"={"get", "cget"}},
+ *          "itemOperations"={
+ *              "get"={"method"="GET", "normalization_context"={"groups"={"get"}}}
+ *          },
+ *          "collectionOperations"={
+ *              "get"={"method"="GET", "normalization_context"={"groups"={"cget"}}}
+ *          }
+ *     }
+ * )
  * @ORM\Entity(repositoryClass="AppBundle\Repository\ArtistRepository")
  * @ORM\HasLifecycleCallbacks()
  */
@@ -26,6 +38,7 @@ class Artist
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Groups({"get", "cget"})
      */
     private $id;
 
@@ -34,6 +47,7 @@ class Artist
      *
      * @ORM\Column(type="string")
      * @Assert\Length(min="3")
+     * @Groups({"get", "cget"})
      */
     private $name;
 
@@ -42,6 +56,7 @@ class Artist
      *
      * @ORM\Column(type="integer")
      * @Assert\Range(min="1900")
+     * @Groups({"get", "cget"})
      */
     private $creationYear;
 
@@ -49,6 +64,7 @@ class Artist
      * @var ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Album", mappedBy="artist", cascade={"all"})
+     * @Groups({"get"})
      */
     private $albums;
 
@@ -56,6 +72,7 @@ class Artist
      * @var ArrayCollection
      *
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Genre", inversedBy="artists", fetch="EAGER")
+     * @Groups({"get", "cget"})
      */
     private $genres;
 
@@ -63,12 +80,14 @@ class Artist
      * @var User
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="submittedArtists", fetch="EAGER")
+     * @Groups({"get"})
      */
     private $submittedBy;
 
     /**
      * @var string
      * @ORM\Column(type="text", nullable=true)
+     * @Groups({"get", "cget"})
      */
     private $biography;
 
@@ -229,5 +248,56 @@ class Artist
         $this->biography = $biography;
 
         return $this;
+    }
+
+    protected function calculateSuggestWeight()
+    {
+        $weight = 0;
+
+        if (!empty($this->biography)) {
+            $weight += 5;
+        }
+
+        if ($this->getAlbums()->count() > 0) {
+            $weight += 5;
+        }
+
+        return $weight;
+    }
+
+    public function getSuggest()
+    {
+        return [
+            'weight' => $this->calculateSuggestWeight(),
+            'input' => array_merge(
+                [
+                    $this->getName(),
+                    (string) $this->getCreationYear(),
+                ],
+                []
+//                $this->getGenres()->map(function(Genre $g){
+//                    return $g->getName();
+//                })->toArray()
+            ),
+            'contexts' => [
+                'genre' => $this->getGenres()->map(function(Genre $g){ return $g->getLabel(); })->toArray()
+            ]
+        ];
+    }
+
+    /**
+     * @return int
+     */
+    public function getAlbumCount()
+    {
+        return $this->getAlbums()->count();
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getGenreLabels()
+    {
+        return $this->getGenres()->map(function(Genre $g){ return $g->getLabel(); });
     }
 }

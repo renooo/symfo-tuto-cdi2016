@@ -22,11 +22,7 @@ class LoadUserData extends AbstractFixture implements ContainerAwareInterface, F
 
     public function load(ObjectManager $manager)
     {
-        $users = [
-            ['username' => 'toto', 'email' => 'toto@yopmail.com', 'password' => 'azerty'],
-            ['username' => 'titi', 'email' => 'titi@yopmail.com', 'password' => 'azerty'],
-        ];
-
+        $users = include 'data/users.php';
 
         /** @var UserManipulator $manipulator */
         $manipulator = $this->container->get('fos_user.util.user_manipulator');

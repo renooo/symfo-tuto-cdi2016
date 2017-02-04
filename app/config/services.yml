@@ -4,6 +4,9 @@ parameters:
 #    parameter_name: value
 
 services:
+#    fos_user.doctrine_registry:
+#        alias: doctrine
+
     app.bandsintown.client:
         class: AppBundle\Client\BandsInTownClient
         arguments: [ "%bandsintown_app_id%", "@guzzle.client.api_bandsintown" ]
@@ -51,6 +54,16 @@ services:
         parent:    'api_platform.doctrine.orm.search_filter'
         arguments: [ { genres.id: 'exact' } ]
         tags:      [ { name: 'api_platform.filter', id: 'artist.genre' } ]
+
+    genre.label_order_filter:
+        parent:    'api_platform.doctrine.orm.order_filter'
+        arguments: [ { label: 'ASC' } ]
+        tags:      [ { name: 'api_platform.filter', id: 'label.order' } ]
+
+    genre.label_filter:
+        parent:    'api_platform.doctrine.orm.search_filter'
+        arguments: [ { label: 'partial' } ]
+        tags:      [ { name: 'api_platform.filter', id: 'label.filter' } ]
 
     any.name_filter:
         parent:    'api_platform.doctrine.orm.search_filter'

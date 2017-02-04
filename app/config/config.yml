@@ -103,3 +103,169 @@ nelmio_cors:
             allow_origin: ['*']
             allow_methods: ['POST', 'PUT', 'GET', 'DELETE']
             max_age: 3600
+
+fos_elastica:
+    clients:
+        default: { host: localhost, port: 9200 }
+    indexes:
+        app:
+            settings:
+                index:
+                    analysis:
+                        analyzer:
+                            custom_analyzer :
+                                type     :    custom
+                                tokenizer:    nGram
+                                filter   :    [stopwords, asciifolding ,lowercase, snowball, elision, worddelimiter]
+                            custom_search_analyzer :
+                                type     :    custom
+                                tokenizer:    standard
+                                filter   :    [stopwords, asciifolding ,lowercase, snowball, elision, worddelimiter]
+                            suggest_analyzer:
+                                type: custom
+                                tokenizer: standard
+                                filter: [standard, lowercase, asciifolding, elision]
+                        tokenizer:
+                            nGram:
+                                type:     nGram
+                                min_gram: 2
+                                max_gram: 20
+                        filter:
+                            snowball:
+                                type:     snowball
+                                language: French
+                            elision:
+                                type:     elision
+                                articles: [l, m, t, qu, n, s, j, d]
+                            stopwords:
+                                type:      stop
+                                stopwords: [_french_]
+                                ignore_case : true
+                            worddelimiter :
+                                type:      word_delimiter
+            types:
+                artist:
+                    _source:
+                        excludes: [suggest]
+                    mappings:
+                        name:
+                            type: text
+                            boost: 6
+                            analyzer: custom_analyzer
+                            search_analyzer: custom_search_analyzer
+                        suggest:
+                            type: completion
+                            analyzer: suggest_analyzer
+                            search_analyzer: suggest_analyzer
+                            contexts:
+                                - {type: category, name: genre}
+                        biography:
+                            type: text
+                            analyzer: custom_analyzer
+                            search_analyzer: custom_search_analyzer
+                        creationYear:
+                            type: date
+                            format: "yyyy"
+                            fields:
+                                raw:
+                                    type: integer
+                        genres:
+                            property_path: genreLabels
+                            type: text
+                            analyzer: custom_analyzer
+                            search_analyzer: custom_search_analyzer
+                            fields:
+                                raw:
+                                    type: keyword
+                        albumCount:
+                            type: integer
+                        albums:
+                            type: nested
+                            include_in_all: false
+                            properties:
+                                title:
+                                    type: text
+                                    analyzer: custom_analyzer
+                                    search_analyzer: custom_search_analyzer
+                                releaseDate:
+                                    type: date
+                                    format: "dateOptionalTime"
+                                tracks:
+                                    type: nested
+                                    include_in_all: false
+                                    properties:
+                                        number:
+                                            type: integer
+                                        title:
+                                            type: text
+                                            analyzer: custom_analyzer
+                                            search_analyzer: custom_search_analyzer
+                                        lyrics:
+                                            type: text
+                                            analyzer: custom_analyzer
+                                            search_analyzer: custom_search_analyzer
+                    persistence:
+                        driver: orm
+                        model: AppBundle\Entity\Artist
+                        provider: ~
+                        listener: ~
+                        finder: ~
+                album:
+                    mappings:
+                        title:
+                            type: text
+                            analyzer: custom_analyzer
+                            search_analyzer: custom_search_analyzer
+                        releaseDate:
+                            type: date
+                            format: "dateOptionalTime"
+                        artist:
+                            type: object
+                            properties:
+                                name:
+                                    type: text
+                                    analyzer: custom_analyzer
+                                    search_analyzer: custom_search_analyzer
+                                genres:
+                                    type: nested
+                                    properties:
+                                        label:
+                                            type: text
+                                            analyzer: custom_analyzer
+                                            search_analyzer: custom_search_analyzer
+                    persistence:
+                        driver: orm
+                        model: AppBundle\Entity\Album
+                        provider: ~
+                        listener: ~
+                        finder: ~
+                genre:
+                    mappings:
+                        label:
+                            type: text
+                            analyzer: custom_analyzer
+                            search_analyzer: custom_search_analyzer
+                    persistence:
+                        driver: orm
+                        model: AppBundle\Entity\Genre
+                        provider: ~
+                        listener: ~
+                        finder: ~
+                track:
+                    mappings:
+                        number:
+                            type: integer
+                        title:
+                            type: text
+                            analyzer: custom_analyzer
+                            search_analyzer: custom_search_analyzer
+                        lyrics:
+                            type: text
+                            analyzer: custom_analyzer
+                            search_analyzer: custom_search_analyzer
+                    persistence:
+                        driver: orm
+                        model: AppBundle\Entity\Track
+                        provider: ~
+                        listener: ~
+                        finder: ~

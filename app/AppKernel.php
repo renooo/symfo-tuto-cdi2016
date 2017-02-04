@@ -20,6 +20,7 @@ class AppKernel extends Kernel
             new FOS\UserBundle\FOSUserBundle(),
             new ApiPlatform\Core\Bridge\Symfony\Bundle\ApiPlatformBundle(),
             new Nelmio\CorsBundle\NelmioCorsBundle(),
+            new FOS\ElasticaBundle\FOSElasticaBundle(),
             new AppBundle\AppBundle(),
         ];
 

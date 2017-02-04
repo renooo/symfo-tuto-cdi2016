@@ -6,6 +6,7 @@ use AppBundle\Entity\Artist;
 use AppBundle\Event\ArtistEvent;
 use AppBundle\Events\ArtistEvents;
 use AppBundle\Form\ArtistFormType;
+use AppBundle\Form\ArtistSearchFormType;
 use AppBundle\Repository\ArtistRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -100,7 +101,24 @@ class ArtistController extends Controller
     {
         $artists = [];
 
+        $finder = $this->container->get('fos_elastica.finder.app.artist');
+        $results = $finder->find('war');
+
+        foreach ($results as $artist) {
+            dump($artist);
+        }
+
         return new JsonResponse($artists);
+    }
+
+    /**
+     * @Route(path="/artists/advanced-search")
+     */
+    public function advancedSearchAction()
+    {
+        $artistSearchForm = $this->createForm(ArtistSearchFormType::class);
+
+        return $this->render('artist/advanced-search.html.twig', ['artistSearchForm' => $artistSearchForm->createView()]);
     }
 
     /**
