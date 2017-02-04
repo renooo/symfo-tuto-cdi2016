@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% form_theme artistSearchForm 'bootstrap_3_horizontal_layout.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/select2-bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/bootstrap-datepicker3.min.css') }}">
+{% endblock %}
+
+{% block body %}
+    <h1>Recherche avancée</h1>
+
+    {{ form_start(artistSearchForm) }}
+    {{ form_row(artistSearchForm.name) }}
+    {{ form_row(artistSearchForm.genres) }}
+    <div class="form-group row">
+        <div class="col-md-6">{{ form_row(artistSearchForm.creationYear_min) }}</div>
+        <div class="col-md-6">{{ form_row(artistSearchForm.creationYear_max) }}</div>
+    </div>
+    {{ form_rest(artistSearchForm) }}
+{% endblock %}
+
+
+{% block inline_javascript %}
+    <script src="{{ asset('js/select2/select2.min.js') }}"></script>
+    <script src="{{ asset('js/select2/i18n/fr.js') }}"></script>
+    <script src="{{ asset('js/datepicker/bootstrap-datepicker.min.js') }}"></script>
+    <script src="{{ asset('js/datepicker/locales/bootstrap-datepicker.fr.min.js') }}"></script>
+
+    <script>
+        $('#artist_search_form_genres').select2({
+            theme: 'bootstrap',
+            ajax: {
+                url: '/api/genres.json',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        'order[label]': 'ASC',
+                        label: params.term
+                    };
+                },
+                processResults: function (data, params) {
+                    return {
+                        results: data
+                    };
+                },
+                cache: true
+            },
+            escapeMarkup: function (markup) { return markup; },
+            minimumInputLength: 1,
+            templateResult: function(genre){ return genre.label; },
+            templateSelection: function(genre){ return genre.label; }
+        });
+
+        $('#artist_search_form_creationYear_min').datepicker({
+            format: 'yyyy',
+            autoclose: true,
+            minViewMode: 'years'
+        }).on('changeDate', function(selected){
+            startDate =  $('#artist_search_form_creationYear_min').val();
+            $('#artist_search_form_creationYear_max').datepicker('setStartDate', startDate);
+        });
+
+        $('#artist_search_form_creationYear_max').datepicker({
+            format: 'yyyy',
+            autoclose: true,
+            minViewMode: 'years'
+        });
+    </script>
+{% endblock %}
